@@ -59,6 +59,9 @@ def croisement(ind1,ind2):
 def mutation(ind):
    ind[random.randint(0,7)] = random.randint(0,7) 
 
+def __eq__(self,other):
+    return self.val == other.val
+
 def display(ind,displayValue,gui, error=False):
     gui.clear('ALL')
     for i in range(8):
@@ -82,7 +85,7 @@ def display(ind,displayValue,gui, error=False):
 
             
 
-def algoloopSimple(displayEachStep = False, displayWithImage = True, displayError = True):
+def algoloopSimple(displayEnd = False,displayEachStep = False, displayWithImage = False, displayError = False):
     pop = create_rand_pop(25)
     gui = guiGrid.GuiGrid(8,8,'900x900')
     solIsFound = False
@@ -92,7 +95,7 @@ def algoloopSimple(displayEachStep = False, displayWithImage = True, displayErro
         displayItem = 'DAME'
     nbIteration = 0
     while not solIsFound:
-        print('Iteration numero : ', nbIteration)
+        #print('Iteration numero : ', nbIteration)
         nbIteration+=1
         solIsFound = pop[0].fitness()==0
         if not solIsFound:
@@ -106,7 +109,25 @@ def algoloopSimple(displayEachStep = False, displayWithImage = True, displayErro
                 mutation(ind)
             pop.extend(create_rand_pop(5))
     print(pop[0])
-    display(pop[0],displayItem,gui,displayError)
-    gui.mainloop()
+    if displayEnd:
+        display(pop[0],displayItem,gui,displayError)
+        gui.mainloop()
+    return pop[0]
 
-algoloopSimple(False,True,True)
+def findAllSoluce():
+    soluce = []
+    stop = False
+    oldLength = 0
+    reint = 0
+    while not stop:
+        tempSoluce = algoloopSimple(False,False,False)
+        if tempSoluce.val not in soluce:
+            soluce.append(tempSoluce.val)
+        stop = oldLength == len(soluce) and reint==3
+        reint+=1
+        reint = 0 if reint==3 else reint
+        print(len(soluce))
+    print(soluce, sep='\n')
+    print(len(soluce))
+        
+findAllSoluce()
