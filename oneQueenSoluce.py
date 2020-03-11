@@ -63,10 +63,13 @@ def mutation(ind):
 def __eq__(self,other):
     return self.val == other.val
 
-def display(ind,displayValue,gui, error=False):
+def display(ind, displayValue, gui, error=False):
     gui.clear('ALL')
     for i in range(8):
-        gui[ind.val[i],i,None] = displayValue
+        if isinstance(displayValue,guiGrid.tk.BitmapImage):
+            gui[ind.val[i],i,'image'] = displayValue
+        else:
+            gui[ind.val[i],i,'text'] = displayValue
     if error:
         for i in range(8):
             deg = 0
@@ -97,7 +100,7 @@ def algoloopSimple(displayEnd = False,displayEachStep = False, displayWithImage 
         displayItem = 'DAME'
     nbIteration = 0
     while not solIsFound:
-        #print('Iteration numero : ', nbIteration)
+        print('Iteration numero : ', nbIteration)
         nbIteration+=1
         solIsFound = pop[0].fitness()==0
         if not solIsFound:
@@ -110,24 +113,11 @@ def algoloopSimple(displayEnd = False,displayEachStep = False, displayWithImage 
             for ind in pop:
                 mutation(ind)
             pop.extend(create_rand_pop(5))
-    print(pop[0])
+    time = timeit.default_timer()-start
+    print(pop[0],' Time : ',time)
     if displayEnd:
         display(pop[0],displayItem,gui,displayError)
-        gui.mainloop()
-    stop = timeit.default_timer()
-    time = stop - start
-    return pop[0], time
+    gui.mainloop()  
 
-def findAllSoluce(nbSoluce):
-    soluce = []
-    findTime = []
-    oldLength = 0
-    while len(soluce)<nbSoluce:
-        tempSoluce,time = algoloopSimple(False,False,False)
-        if tempSoluce.val not in soluce:
-            soluce.append(tempSoluce.val)
-        print(len(soluce),' Time : ',time)
-    print(soluce, sep='\n')
-    print(len(soluce))
+algoloopSimple(True,True,False,True)
         
-findAllSoluce(50)
